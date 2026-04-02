@@ -37,7 +37,7 @@ app.get('/', async (req, res) => {
         res.send(`
             <html>
                 <body style="font-family: sans-serif; text-align: center; padding: 50px;">
-                    <h1>🚀 Full-Stack DevOps Lab</h1>
+                    <h1>🚀 Cloud-Native DevOps Engineer</h1>
                     <p>Status: <span style="color: green;"><strong>Connected to MongoDB</strong></span></p>
                     <div style="font-size: 2em; margin: 20px; color: #27ae60;">
                         Total Visitors: ${visitData.count}
