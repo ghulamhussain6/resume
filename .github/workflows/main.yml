@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]  # Triggers every time you push to main
+    branches: [ "main" ]
 
 jobs:
   build-and-push:
@@ -10,6 +10,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      # This step checks if your GitHub Secrets are actually being found
+      - name: Debug Secrets
+        run: |
+          echo "Checking if secrets are available..."
+          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ]; then echo "❌ USERNAME IS MISSING"; else echo "✅ USERNAME IS LOADED"; fi
+          if [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then echo "❌ TOKEN IS MISSING"; else echo "✅ TOKEN IS LOADED"; fi
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -22,4 +29,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: hussainghulam/resume-app:latest
+          tags: hussainghulam/resume-app-cloud:latest
