@@ -1,14 +1,10 @@
-//<html><body><h1>Hussain's Resume Project</h1></body></html>
-// Inside your <script> tag in index.html
-const API_BASE_URL = "http://192.168.56.240:3000"; // Replace with your actual CentOS IP
+// Replace with your actual public IP if you are testing from outside your local network
+const API_URL = "https://192.168.56.240/api/stats"; 
 
-async function getResumeData() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/resume`);
-        const data = await response.json();
-        console.log("Resume Loaded:", data);
-        // code to update your HTML with the data
-    } catch (err) {
-        console.error("Connection to CentOS failed:", err);
-    }
-}
+fetch(API_URL)
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('visitor-count').innerText = data.visitors;
+    console.log("Infrastructure Status:", data.infrastructure);
+  })
+  .catch(err => console.error("Frontend couldn't reach CentOS:", err));
