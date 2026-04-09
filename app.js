@@ -41,7 +41,7 @@ app.get('/api/stats', async (req, res) => {
             success: true,
             visitors: visitData.count,
             status: "Connected to MongoDB",
-            infrastructure: "Docker + CentOS + GitHub Pages"
+            infrastructure: process.env.INFRA_LABEL || "Development Mode"
         });
     } catch (err) {
         res.status(500).json({ success: false, error: "Database Error" });
