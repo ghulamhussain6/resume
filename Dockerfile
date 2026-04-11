@@ -1,11 +1,12 @@
 # STAGE 1: Build Environment
-FROM node:18-alpine AS builder
+# Updated to Node 20 to support the latest Mongoose/MongoDB drivers
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
 # STAGE 2: Production Environment
-FROM node:18-alpine
+FROM node:20-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
@@ -17,4 +18,6 @@ COPY . .
 USER node
 
 EXPOSE 3001
-CMD ["node", "app.js"]
+
+# Fixed to point to server.js based on your earlier code
+CMD ["node", "server.js"]
