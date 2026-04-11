@@ -20,4 +20,4 @@ USER node
 EXPOSE 3001
 
 # Fixed to point to server.js based on your earlier code
-CMD ["node", "server.js"]
+CMD ["node", "app.js"]
