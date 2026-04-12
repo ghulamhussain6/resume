@@ -1,13 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const client = require('prom-client'); // 1. Import the Prometheus client
+const client = require('prom-client');
 
 const app = express();
 
-// 2. Initialize Prometheus Metrics
+// 1. Initialize Prometheus Metrics
 const register = new client.Registry();
-client.collectDefaultMetrics({ register }); // Collects CPU, Memory, and Event Loop data automatically
+client.collectDefaultMetrics({ register });
+
+// 2. Define a custom Gauge for visitors
+const visitorGauge = new client.Gauge({
+    name: 'resume_app_total_visitors',
+    help: 'Total visitor count from MongoDB'
+});
+register.registerMetric(visitorGauge);
 
 app.use(cors({
     origin: 'https://hussain.js.org'
@@ -23,10 +30,21 @@ mongoose.connect(mongoUri)
 const VisitSchema = new mongoose.Schema({ count: Number });
 const Visit = mongoose.model('Visit', VisitSchema);
 
-// 3. Prometheus Metrics Route (This fixes the 404)
+// 3. Updated Metrics Route to fetch DB count before responding
 app.get('/metrics', async (req, res) => {
-    res.setHeader('Content-Type', register.contentType);
-    res.send(await register.metrics());
+    try {
+        // Fetch the current count from DB and update the Prometheus gauge
+        const visitData = await Visit.findOne();
+        if (visitData) {
+            visitorGauge.set(visitData.count);
+        }
+        
+        res.setHeader('Content-Type', register.contentType);
+        res.send(await register.metrics());
+    } catch (err) {
+        console.error("Error updating metrics:", err);
+        res.status(500).send(err);
+    }
 });
 
 app.use((req, res, next) => {
